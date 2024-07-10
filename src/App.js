@@ -1,5 +1,5 @@
 import React from 'react';
-import InteractiveMap from './components/InteractiveMap';
+// import InteractiveMap from './components/InteractiveMap';
 import './App.scss';
 import BostonBingo from "./components/BostonBingo";
 
