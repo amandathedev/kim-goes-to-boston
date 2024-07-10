@@ -4,6 +4,7 @@ body {
   padding: 0;
   background-color: #f0f0f0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
@@ -11,6 +12,10 @@ body {
 
 .App {
   width: 100%;
-  max-width: 400px;
-  padding: 20px;
+  max-width: 800px;
+  text-align: center;
+
+  h1 {
+    margin: 1rem 0;
+  }
 }

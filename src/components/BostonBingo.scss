@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: url('https://i.redd.it/3ysku1h7stcb1.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.bingo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  padding: 10px;
+  border: 2px solid #000;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  width: 100%;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.header span {
+  padding: 5px;
+}
+
+.bingo-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 5px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.bingo-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+  padding: 10px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.bingo-cell.completed {
+  background-color: #d4edda;
+}
+
+.bingo-cell.bingo {
+  background-color: yellow;
+}
+
+.completed-task {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.task {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.success-indicator {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+@media (max-width: 600px) {
+  .bingo-grid {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+  }
+}
