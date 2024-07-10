@@ -84,7 +84,7 @@ const BostonBingo = () => {
     } else {
       setBingos([]);
     }
-  }, [completedTasks]);
+  }, [completedTasks, achievedBingos]);
 
   useEffect(() => {
     localStorage.setItem('achievedBingos', JSON.stringify(achievedBingos));
