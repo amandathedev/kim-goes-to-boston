@@ -3,7 +3,11 @@ import './BostonBingo.scss';
 import Tooltip from './Tooltip';
 import useWindowSize from '../hooks/useWindowSize';
 import { tasks } from '../utils/tasks';
+import { FaBaseballBall, FaMugHot, FaLandmark } from 'react-icons/fa';
+import { GiLighthouse, GiSailboat } from 'react-icons/gi';
 import Confetti from 'react-confetti';
+
+const icons = [FaBaseballBall, GiLighthouse, FaMugHot, GiSailboat, FaLandmark];
 
 const generateBingoGrid = () => {
   const grid = Array(5).fill(null).map(() => Array(6).fill(null));
@@ -112,44 +116,50 @@ const BostonBingo = () => {
       </div>
       {size.width <= 600 ? (
         <div className="mobile-column-container">
-          {bingoGrid[0].map((_, colIndex) => (
-            <div className="mobile-column" key={`mobile-column-${colIndex}`}>
-              <div className="column-header">{columnHeaders[colIndex]}</div>
-              {bingoGrid.map((row, rowIndex) => {
-                const task = row[colIndex];
-                return (
-                  <div
-                    key={`${rowIndex}-${colIndex}`}
-                    className={`bingo-cell ${isTaskCompleted(task.id) ? 'completed' : ''} ${isTaskInBingo(task.id) ? 'bingo' : ''}`}
-                    onClick={() => handleTaskClick(task.id)}
-                  >
-                    <Tooltip text={task.text}>
-                      <div className={isTaskCompleted(task.id) ? 'completed-task' : 'task'}>
-                        {isTaskCompleted(task.id) ? '✓' : task.text}
-                      </div>
-                    </Tooltip>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+          {bingoGrid[0].map((_, colIndex) => {
+            const Icon = icons[colIndex % icons.length]; // Cycle through icons
+            return (
+              <div className="mobile-column" key={`mobile-column-${colIndex}`}>
+                <div className="column-header">{columnHeaders[colIndex]}</div>
+                {bingoGrid.map((row, rowIndex) => {
+                  const task = row[colIndex];
+                  return (
+                    <div
+                      key={`${rowIndex}-${colIndex}`}
+                      className={`bingo-cell ${isTaskCompleted(task.id) ? 'completed' : ''} ${isTaskInBingo(task.id) ? 'bingo' : ''}`}
+                      onClick={() => handleTaskClick(task.id)}
+                    >
+                      <Tooltip text={task.text}>
+                        <div className={isTaskCompleted(task.id) ? 'completed-task' : 'task'}>
+                          {isTaskCompleted(task.id) ? <Icon size={24} /> : task.text}
+                        </div>
+                      </Tooltip>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="bingo-grid">
           {bingoGrid.map((row, rowIndex) => (
-            row.map((task, colIndex) => (
-              <div
-                key={`${rowIndex}-${colIndex}`}
-                className={`bingo-cell ${isTaskCompleted(task.id) ? 'completed' : ''} ${isTaskInBingo(task.id) ? 'bingo' : ''}`}
-                onClick={() => handleTaskClick(task.id)}
-              >
-                <Tooltip text={task.text}>
-                  <div className={isTaskCompleted(task.id) ? 'completed-task' : 'task'}>
-                    {isTaskCompleted(task.id) ? '✓' : task.text}
-                  </div>
-                </Tooltip>
-              </div>
-            ))
+            row.map((task, colIndex) => {
+              const Icon = icons[colIndex % icons.length]; // Cycle through icons
+              return (
+                <div
+                  key={`${rowIndex}-${colIndex}`}
+                  className={`bingo-cell ${isTaskCompleted(task.id) ? 'completed' : ''} ${isTaskInBingo(task.id) ? 'bingo' : ''}`}
+                  onClick={() => handleTaskClick(task.id)}
+                >
+                  <Tooltip text={task.text}>
+                    <div className={isTaskCompleted(task.id) ? 'completed-task' : 'task'}>
+                      {isTaskCompleted(task.id) ? <Icon size={24} /> : task.text}
+                    </div>
+                  </Tooltip>
+                </div>
+              );
+            })
           ))}
         </div>
       )}
