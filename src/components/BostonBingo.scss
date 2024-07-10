@@ -84,7 +84,36 @@ body {
 
 @media (max-width: 600px) {
   .bingo-grid {
-    grid-template-columns: repeat(1, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    display: none; /* Hide the full grid on mobile */
+  }
+
+  .mobile-column-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto; /* Center container */
+    width: 80%; /* Make it narrower than the viewport */
+  }
+
+  .mobile-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0; /* Margin to separate from other content */
+  }
+
+  .column-header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .bingo-cell {
+    flex: 1;
+    height: auto;
+    width: 100%;
+    padding: 2rem 0;
+    margin: 0.3rem 0;
   }
 }

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './BostonBingo.scss';
 import Tooltip from './Tooltip';
+import useWindowSize from '../hooks/useWindowSize';
 import { tasks } from '../utils/tasks';
+import Confetti from 'react-confetti';
 
 const generateBingoGrid = () => {
   const grid = Array(5).fill(null).map(() => Array(6).fill(null));
@@ -49,6 +51,11 @@ const BostonBingo = () => {
     return saved ? JSON.parse(saved) : [];
   });
   const [bingos, setBingos] = useState([]);
+  const [achievedBingos, setAchievedBingos] = useState(() => {
+    const saved = localStorage.getItem('achievedBingos');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
@@ -56,10 +63,28 @@ const BostonBingo = () => {
     const newBingos = checkBingo(completedTasks, bingoGrid);
     if (newBingos) {
       setBingos(newBingos);
+      const newAchievedBingos = [...achievedBingos];
+      let hasNewBingo = false;
+      newBingos.forEach((bingo) => {
+        const bingoKey = bingo.join('-');
+        if (!newAchievedBingos.includes(bingoKey)) {
+          newAchievedBingos.push(bingoKey);
+          hasNewBingo = true;
+        }
+      });
+      if (hasNewBingo) {
+        setAchievedBingos(newAchievedBingos);
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 5000); // Show confetti for 5 seconds
+      }
     } else {
       setBingos([]);
     }
   }, [completedTasks]);
+
+  useEffect(() => {
+    localStorage.setItem('achievedBingos', JSON.stringify(achievedBingos));
+  }, [achievedBingos]);
 
   const handleTaskClick = (taskId) => {
     if (completedTasks.includes(taskId)) {
@@ -73,29 +98,61 @@ const BostonBingo = () => {
   const isTaskInBingo = (taskId) => bingos.some(bingo => bingo.includes(taskId));
 
   const bingoGrid = generateBingoGrid();
+  const size = useWindowSize();
+
+  const columnHeaders = ['B', 'O', 'S', 'T', 'O', 'N'];
 
   return (
     <div className="bingo-container">
+      {showConfetti && <Confetti width={size.width} height={size.height} />}
       <div className="header">
-        <span>B</span><span>O</span><span>S</span><span>T</span><span>O</span><span>N</span>
-      </div>
-      <div className="bingo-grid">
-        {bingoGrid.map((row, rowIndex) => (
-          row.map((task, colIndex) => (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className={`bingo-cell ${isTaskCompleted(task.id) ? 'completed' : ''} ${isTaskInBingo(task.id) ? 'bingo' : ''}`}
-              onClick={() => handleTaskClick(task.id)}
-            >
-              <Tooltip text={task.text}>
-                <div className={isTaskCompleted(task.id) ? 'completed-task' : 'task'}>
-                  {isTaskCompleted(task.id) ? '✓' : task.text}
-                </div>
-              </Tooltip>
-            </div>
-          ))
+        {columnHeaders.map((letter, index) => (
+          <span key={index}>{letter}</span>
         ))}
       </div>
+      {size.width <= 600 ? (
+        <div className="mobile-column-container">
+          {bingoGrid[0].map((_, colIndex) => (
+            <div className="mobile-column" key={`mobile-column-${colIndex}`}>
+              <div className="column-header">{columnHeaders[colIndex]}</div>
+              {bingoGrid.map((row, rowIndex) => {
+                const task = row[colIndex];
+                return (
+                  <div
+                    key={`${rowIndex}-${colIndex}`}
+                    className={`bingo-cell ${isTaskCompleted(task.id) ? 'completed' : ''} ${isTaskInBingo(task.id) ? 'bingo' : ''}`}
+                    onClick={() => handleTaskClick(task.id)}
+                  >
+                    <Tooltip text={task.text}>
+                      <div className={isTaskCompleted(task.id) ? 'completed-task' : 'task'}>
+                        {isTaskCompleted(task.id) ? '✓' : task.text}
+                      </div>
+                    </Tooltip>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="bingo-grid">
+          {bingoGrid.map((row, rowIndex) => (
+            row.map((task, colIndex) => (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className={`bingo-cell ${isTaskCompleted(task.id) ? 'completed' : ''} ${isTaskInBingo(task.id) ? 'bingo' : ''}`}
+                onClick={() => handleTaskClick(task.id)}
+              >
+                <Tooltip text={task.text}>
+                  <div className={isTaskCompleted(task.id) ? 'completed-task' : 'task'}>
+                    {isTaskCompleted(task.id) ? '✓' : task.text}
+                  </div>
+                </Tooltip>
+              </div>
+            ))
+          ))}
+        </div>
+      )}
       {bingos.length > 0 && <div className="success-indicator">Bingo!</div>}
     </div>
   );
